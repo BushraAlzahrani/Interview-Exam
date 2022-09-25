@@ -4,22 +4,25 @@ import React, { useState, useEffect} from 'react'
 
 function App() {
 
-  const[firstAmount, setFirstAmount] = useState(1);
-  const[secondAmount, setSecondAmount] = useState(1);
+  const[amount, setAmount] = useState();
+  const [conversionResult, setConversionResult] = useState();
 
-  const[firstCurrency, setFirstCurrency] = useState('United Arab Emirates Dirham');
-  const[secondCurrency, setSecondCurrency] = useState('Saudi Riyal');
+  const[firstCurrency, setFirstCurrency] = useState('AED');
+  const[secondCurrency, setSecondCurrency] = useState('SAR');
+
 
   const [currencies ,setcurrencies]= useState([])
+  
+  
   
 
 
   useEffect (()=>{
     axios
-    .get(`https://api.apilayer.com/fixer/symbols?apikey=5yKicDFJYOnlMBai7tyLJwh80yeA6qxm`)
+    .get(`https://api.apilayer.com/fixer/symbols?apikey=7XQ6wzDAAxNX6dkt8Us3NlZbtZ9SCaPb`)
     .then((res)=>{
-        console.log(Object.values(res.data.symbols));
-        setcurrencies(Object.values(res.data.symbols));
+        console.log(Object.keys(res.data.symbols));
+        setcurrencies(Object.keys(res.data.symbols));
     })
     .catch((err)=>{
         console.log(err);
@@ -31,24 +34,24 @@ function App() {
 
 useEffect (()=>{
   axios
-  .get(`https://api.apilayer.com/fixer/convert?to=${secondCurrency}&from=${firstCurrency}&amount=40&apikey=5yKicDFJYOnlMBai7tyLJwh80yeA6qxm`)
+  .get(`https://api.apilayer.com/fixer/convert?to=${secondCurrency}&from=${firstCurrency}&amount=${amount}&apikey=7XQ6wzDAAxNX6dkt8Us3NlZbtZ9SCaPb`)
   .then((res)=>{
-      console.log(Object.values(res.data.symbols));
-      setcurrencies(Object.values(res.data.symbols));
+      console.log(res.data.result);
+      setConversionResult(res.data.result);
   })
   .catch((err)=>{
       console.log(err);
   })
 
 
-},[firstCurrency, secondCurrency])
+},[amount,firstCurrency, secondCurrency])
 
 
   return (
     <div className="App">
 
       <span>
-      <input type="number" placeholder={firstAmount} onChange={(e)=>{setFirstAmount(e.target.value)}}></input>
+      <input type="number" placeholder={amount} onChange={(e)=>{setAmount(e.target.value)}}></input>
       <select onChange={(e) => {
                   setFirstCurrency(e.target.value);}}>
                     
@@ -57,14 +60,10 @@ useEffect (()=>{
             
        </select>
           
-       {/* <select>
-        <option>United Arab Emirates Dirham</option>
-       </select> */}
-
                 <br/>
                 <br/>
 
-       <input type="number" placeholder={secondAmount} onChange={(e)=>{setSecondAmount(e.target.value)}}></input>
+       <input type="number" placeholder={conversionResult} ></input>
       
       <select onChange={(e) => {
                   setSecondCurrency(e.target.value);}}>
@@ -74,12 +73,9 @@ useEffect (()=>{
             
        </select>
 
-{/* <select>
-        <option>Saudi Riyal</option>
-       </select> */}
 
-       <h4>{firstAmount} {firstCurrency}</h4>
-       <h2>{secondAmount} {secondCurrency}</h2>
+       <h4>{amount} {firstCurrency}</h4>
+       <h2>{conversionResult} {secondCurrency}</h2>
        </span>
     </div>
   );
